@@ -1,11 +1,35 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/">Home</router-link>
+    <span v-for="view in this.views" :key="view.id">
+      |
+      <router-link :to="{ path: `/pages/${view.attributes.route}` }">{{
+        view.attributes.route
+      }}</router-link>
+    </span>
   </nav>
   <router-view />
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      views: null,
+    };
+  },
+  mounted() {
+    fetch("http://localhost:1337/api/views", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => (this.views = data.data));
+  },
+};
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
